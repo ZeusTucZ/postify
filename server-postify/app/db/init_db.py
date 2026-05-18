@@ -1,6 +1,6 @@
 from app.db.session import engine
 from sqlmodel import SQLModel
-from app.models.user import User
+from app import models  # noqa: F401
 
 
 async def init_db():
