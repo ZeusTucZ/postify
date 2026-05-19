@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import useFetch from "../hooks/useFetch";
 import { GoHome } from "react-icons/go";
 import { MdOutlineVideoStable } from "react-icons/md";
@@ -24,7 +24,9 @@ const Profile = () => {
             </div>
             <div className="h-[260px] flex bg-red-300">
                 {data?.map((post) =>(
-                    <div key={post.id} className="h-[150px] w-[120px] bg-orange-800">{post.id}</div>
+                    <Link key={post.id} to={`/posts/${post.id}`}>
+                        <div className="h-[150px] w-[120px] bg-orange-800">{post.id}</div>
+                    </Link>
                 ))}
             </div>
             <div className = "h-[50px] bg-blue-300 flex flex-row" >
