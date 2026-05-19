@@ -27,7 +27,7 @@ const Profile = () => {
                     <div key={post.id} className="h-[150px] w-[120px] bg-orange-800">{post.id}</div>
                 ))}
             </div>
-            <div className = "h-[50px] bg-blue-300" >
+            <div className = "h-[50px] bg-blue-300 flex flex-row" >
                 <GoHome />
                 <MdOutlineVideoStable />
                 <IoIosSend />
