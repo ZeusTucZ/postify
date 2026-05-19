@@ -7,6 +7,8 @@ from app.schemas.user import UserCreate, UserRead, UserUpdate
 from app.db.session import get_session
 import uuid
 from fastapi import HTTPException
+from app.schemas.post import PostRead
+from app.models.post import Post
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -53,3 +55,7 @@ async def update_user(user_id: uuid.UUID, data: UserUpdate, session: AsyncSessio
     await session.refresh(user)
     return user
 
+@router.get('/{userId}/posts', response_model=List[PostRead], status_code=200)
+async def get_posts_by_user(userId: uuid.UUID, session: AsyncSession = Depends(get_session)):
+    res = await session.execute(select(Post).where(Post.user_id == userId))
+    return res.scalars().all()
