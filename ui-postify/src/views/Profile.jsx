@@ -11,6 +11,8 @@ const Profile = () => {
     const urlPosts = `http://localhost:8000/users/${userId}/posts`
 
     const { data } = useFetch(urlPosts);
+    const iconButtonClass = "flex h-10 w-10 items-center justify-center rounded-full text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-950";
+    const iconClass = "h-6 w-6";
 
     console.log(data)
 
@@ -29,12 +31,22 @@ const Profile = () => {
                     </Link>
                 ))}
             </div>
-            <div className = "h-[50px] bg-blue-300 flex flex-row" >
-                <GoHome />
-                <MdOutlineVideoStable />
-                <IoIosSend />
-                <CiSearch />
-                <CiUser />
+            <div className = "h-[64px] border-t border-zinc-200 bg-white flex flex-row items-center justify-around shadow-sm" >
+                <button className={`${iconButtonClass} bg-zinc-100 text-zinc-950`} type="button">
+                    <GoHome className={iconClass} />
+                </button>
+                <button className={iconButtonClass} type="button">
+                    <MdOutlineVideoStable className={iconClass} />
+                </button>
+                <button className={iconButtonClass} type="button">
+                    <IoIosSend className={iconClass} />
+                </button>
+                <button className={iconButtonClass} type="button">
+                    <CiSearch className={iconClass} />
+                </button>
+                <button className={iconButtonClass} type="button">
+                    <CiUser className={iconClass} />
+                </button>
             </div>
             </div>
         </>
