@@ -1,11 +1,7 @@
-import './App.css'
+import Home from "./views/Home";
 
 function App() {
-  return (
-    <>
-      <h1>Hello</h1>
-    </>
-  )
+  return <Home />;
 }
 
-export default App
+export default App;
