@@ -1,13 +1,15 @@
 from typing import List
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from app.db.session import get_session
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
 from app.schemas.post import PostCreate, PostRead, PostUpdate, PostReadDetails
 from app.models.post import Post
+from app.models.image import Image
+from app.services.cloudinary_services import cloudinary_service as cloudinary_services
 from app.schemas.like import LikeRead
 from app.models.like import Like
 
@@ -22,12 +24,41 @@ async def get_posts(session: AsyncSession = Depends(get_session)):
     return result.scalars().all()
 
 @router.post('/', response_model=PostRead, status_code=201)
-async def create_post(data: PostCreate, session: AsyncSession = Depends(get_session)):
-    post = Post(**data.model_dump())
+async def create_post(user_id: str = Form(...), description: str = Form(...), files: List[UploadFile] = File(default=[]), session: AsyncSession = Depends(get_session)):
+    post = Post(description=description, user_id=user_id)
     session.add(post)
     await session.commit()
     await session.refresh(post)
-    return post
+    
+    images = []
+    if files and files[0].filename:
+        for file in files:
+            cloud_res = await cloudinary_services.upload_image(
+                file,
+                folder=f"postify/posts/{post.id}"
+            )
+
+            image = Image(
+                url=cloud_res["url"],
+                public_id=cloud_res['public_id'],
+                post_id=post.id
+            )
+
+            session.add(image)
+            images.append(image)
+
+    await session.commit()
+
+    return PostReadDetails(
+        id=post.id,
+        user_id=post.user_id,
+        description=post.description,
+        created_at=post.created_at,
+        likes=0,
+        comments=0
+    )
+
+
 
 @router.get("/{post_id}", response_model=PostReadDetails)
 async def get_post_by_id(post_id: uuid.UUID, session: AsyncSession = Depends(get_session)):
